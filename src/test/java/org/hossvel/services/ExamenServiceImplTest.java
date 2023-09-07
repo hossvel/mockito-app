@@ -4,12 +4,15 @@ import org.hossvel.models.Examen;
 import org.hossvel.repository.IExamenRepository;
 import org.hossvel.repository.IPreguntaRepository;
 import org.hossvel.service.ExamenServiceImpl;
-import org.hossvel.service.IExamenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +21,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExamenServiceImplTest {
     @Mock
     IExamenRepository iexamenRepository;
@@ -27,7 +32,7 @@ public class ExamenServiceImplTest {
     ExamenServiceImpl examenServiceImpl;// es la implementacion
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this); // para uso de anotaciones
+       //MockitoAnnotations.openMocks(this); // para uso de anotaciones
         System.out.println("Inicio de Metodo");
     }
 
