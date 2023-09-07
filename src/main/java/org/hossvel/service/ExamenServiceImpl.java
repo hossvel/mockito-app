@@ -13,12 +13,10 @@ public class ExamenServiceImpl implements IExamenService{
 
     }
     @Override
-    public Examen findExamenPorNombre(String nombre) {
-        Optional<Examen> exaopt = iexamenRepository.findAll()
+    public Optional<Examen> findExamenPorNombre(String nombre) {
+        return iexamenRepository.findAll()
                 .stream()
                 .filter(e -> e.getNombre().contains(nombre)).findFirst();
-        Examen ex = null;
-        if(exaopt.isPresent()) ex = exaopt.orElseThrow();
-        return ex;
+
     }
 }
