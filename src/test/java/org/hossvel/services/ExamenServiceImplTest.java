@@ -7,6 +7,9 @@ import org.hossvel.service.ExamenServiceImpl;
 import org.hossvel.service.IExamenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,15 +19,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ExamenServiceImplTest {
+    @Mock
     IExamenRepository iexamenRepository;
+    @Mock
     IPreguntaRepository ipreguntaRepository;
-    IExamenService examenServiceImpl;
+    @InjectMocks
+    ExamenServiceImpl examenServiceImpl;// es la implementacion
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this); // para uso de anotaciones
         System.out.println("Inicio de Metodo");
-        iexamenRepository   = mock(IExamenRepository.class);
-        ipreguntaRepository   = mock(IPreguntaRepository.class);
-        examenServiceImpl = new ExamenServiceImpl(iexamenRepository, ipreguntaRepository);
     }
 
     @Test
@@ -103,6 +107,6 @@ public class ExamenServiceImplTest {
         //then
         assertNull(examen);
         verify(iexamenRepository).findAll();
-       // verify(ipreguntaRepository).findPreguntasPorExamenId(anyLong()); // No llama porq no encontro examen
+        // verify(ipreguntaRepository).findPreguntasPorExamenId(anyLong()); // No llama porq no encontro examen
     }
 }
