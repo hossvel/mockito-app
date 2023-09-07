@@ -7,6 +7,7 @@ import org.hossvel.service.ExamenServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -267,5 +268,19 @@ public class ExamenServiceImplTest {
                     + argument + " debe ser un entero positivo";
         }
     }
+
+
+    @Test
+    void testArgumentCaptor() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        //when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);// no es nesesario
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        ArgumentCaptor<Long> captor1 = ArgumentCaptor.forClass(Long.class);
+        verify(ipreguntaRepository).findPreguntasPorExamenId(captor1.capture());
+
+        assertEquals(6L, captor1.getValue());
+    }
+
 
 }
