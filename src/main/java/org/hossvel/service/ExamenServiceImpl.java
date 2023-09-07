@@ -5,10 +5,13 @@ import org.hossvel.repository.IExamenRepository;
 
 import java.util.Optional;
 
-public class
-ExamenServiceImpl implements IExamenService{
+public class ExamenServiceImpl implements IExamenService{
     private IExamenRepository iexamenRepository;
 
+    public ExamenServiceImpl(IExamenRepository examenRepository) {
+        this.iexamenRepository = examenRepository;
+
+    }
     @Override
     public Examen findExamenPorNombre(String nombre) {
         Optional<Examen> exaopt = iexamenRepository.findAll()
