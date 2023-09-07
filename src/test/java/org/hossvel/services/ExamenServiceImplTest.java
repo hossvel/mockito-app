@@ -66,4 +66,43 @@ public class ExamenServiceImplTest {
 
     }
 
+    @Test
+    void testPreguntasExamenVerify() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        Examen examen = examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6, examen.getPreguntas().size());
+        assertTrue(examen.getPreguntas().contains("integrales"));
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(anyLong());
+
+    }
+
+    @Test
+    void testPreguntasExamenIdVerify() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(6L)).thenReturn(Datos.PREGUNTAS);
+        Examen examen = examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6, examen.getPreguntas().size());
+        assertTrue(examen.getPreguntas().contains("integrales"));
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(6L);
+
+    }
+
+    @Test
+    void testNoExisteExamenVerify() {
+        // given
+        when(iexamenRepository.findAll()).thenReturn(Collections.emptyList());
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+
+        //when
+        Examen examen = examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        //then
+        assertNull(examen);
+        verify(iexamenRepository).findAll();
+       // verify(ipreguntaRepository).findPreguntasPorExamenId(anyLong()); // No llama porq no encontro examen
+    }
 }
