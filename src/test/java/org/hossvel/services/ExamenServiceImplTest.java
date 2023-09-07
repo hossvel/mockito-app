@@ -4,6 +4,7 @@ import org.hossvel.models.Examen;
 import org.hossvel.repository.IExamenRepository;
 import org.hossvel.service.ExamenServiceImpl;
 import org.hossvel.service.IExamenService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -14,12 +15,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ExamenServiceImplTest {
+    IExamenRepository iexamenRepository;
+    IExamenService examenService;
+    @BeforeEach
+    void setUp() {
+        System.out.println("Inicio de Metodo");
+        iexamenRepository   = mock(IExamenRepository.class);
+        examenService = new ExamenServiceImpl(iexamenRepository);
+    }
 
     @Test
     void findExamenPorNombre() {
-
-        IExamenRepository iexamenRepository = mock(IExamenRepository.class);
-        IExamenService examenService = new ExamenServiceImpl(iexamenRepository);
 
         when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
 
@@ -32,8 +38,6 @@ public class ExamenServiceImplTest {
     @Test
     void findExamenPorNombreListaVacia() {
         List<Examen> datos = Collections.emptyList();
-        IExamenRepository iexamenRepository = mock(IExamenRepository.class);
-        IExamenService examenService = new ExamenServiceImpl(iexamenRepository);
 
         when(iexamenRepository.findAll()).thenReturn(datos);
         Optional<Examen> examen = examenService.findExamenPorNombre("Lenguaje");
