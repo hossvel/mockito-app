@@ -175,4 +175,46 @@ public class ExamenServiceImplTest {
         verify(ipreguntaRepository).findPreguntasPorExamenId(isNull());
 
     }
+
+    @Test
+    void testArgumentMatchers() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(argThat(x -> x.equals(6L)));
+    }
+    @Test
+    void testArgumentMatchers2() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(argThat(arg -> arg != null && arg >= 5L));
+
+    }
+
+    @Test
+    void testArgumentMatchers3() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(argThat(arg -> arg != null && arg.equals(6L)));
+
+    }
+
+    @Test
+    void testArgumentMatchers4() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(eq(6L));
+
+    }
 }
