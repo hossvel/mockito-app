@@ -2,6 +2,7 @@ package org.hossvel.services;
 
 import org.hossvel.models.Examen;
 import org.hossvel.repository.IExamenRepository;
+import org.hossvel.repository.IPreguntaRepository;
 import org.hossvel.service.ExamenServiceImpl;
 import org.hossvel.service.IExamenService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +17,14 @@ import static org.mockito.Mockito.*;
 
 public class ExamenServiceImplTest {
     IExamenRepository iexamenRepository;
-    IExamenService examenService;
+    IPreguntaRepository ipreguntaRepository;
+    IExamenService examenServiceImpl;
     @BeforeEach
     void setUp() {
         System.out.println("Inicio de Metodo");
         iexamenRepository   = mock(IExamenRepository.class);
-        examenService = new ExamenServiceImpl(iexamenRepository);
+        ipreguntaRepository   = mock(IPreguntaRepository.class);
+        examenServiceImpl = new ExamenServiceImpl(iexamenRepository, ipreguntaRepository);
     }
 
     @Test
@@ -29,7 +32,7 @@ public class ExamenServiceImplTest {
 
         when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
 
-        Optional<Examen> examen = examenService.findExamenPorNombre("Lenguaje");
+        Optional<Examen> examen = examenServiceImpl.findExamenPorNombre("Lenguaje");
         assertTrue(examen.isPresent());
         assertEquals(6L,examen.orElseThrow().getId());
         assertEquals(examen.get().getNombre(),"Lenguaje");
@@ -40,8 +43,27 @@ public class ExamenServiceImplTest {
         List<Examen> datos = Collections.emptyList();
 
         when(iexamenRepository.findAll()).thenReturn(datos);
-        Optional<Examen> examen = examenService.findExamenPorNombre("Lenguaje");
-
+        Optional<Examen> examen = examenServiceImpl.findExamenPorNombre("Lenguaje");
         assertFalse(examen.isPresent());
     }
+
+    @Test
+    void testPreguntasExamenId() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(6L)).thenReturn(Datos.PREGUNTAS);
+        Examen examen = examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6, examen.getPreguntas().size());
+        assertTrue(examen.getPreguntas().contains("integrales"));
+
+    }
+    @Test
+    void testPreguntasExamenAny() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        Examen examen = examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6, examen.getPreguntas().size());
+        assertTrue(examen.getPreguntas().contains("integrales"));
+
+    }
+
 }
