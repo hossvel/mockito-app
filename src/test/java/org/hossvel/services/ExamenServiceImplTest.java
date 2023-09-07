@@ -7,10 +7,7 @@ import org.hossvel.service.ExamenServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -34,6 +31,9 @@ public class ExamenServiceImplTest {
     IPreguntaRepository ipreguntaRepository;
     @InjectMocks
     ExamenServiceImpl examenServiceImpl;// es la implementacion
+
+    @Captor
+    ArgumentCaptor<Long> captor;
     @BeforeEach
     void setUp() {
         //MockitoAnnotations.openMocks(this); // para uso de anotaciones
@@ -282,5 +282,12 @@ public class ExamenServiceImplTest {
         assertEquals(6L, captor1.getValue());
     }
 
+    @Test
+    void testArgumentCaptor1() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        verify(ipreguntaRepository).findPreguntasPorExamenId(captor.capture());
 
+        assertEquals(6L, captor.getValue());
+    }
 }
