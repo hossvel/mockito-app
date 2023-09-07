@@ -36,7 +36,8 @@ public class Datos {
     public final static List<Examen> EXAMENES_ID_NEGATIVOS = Arrays.asList(
             new Examen(-5L, "Matemáticas"),
             new Examen(-6L, "Lenguaje"),
-            new Examen(null, "Historia")
+            new Examen(null, "Historia"),
+            new Examen(8L, "Arte")
     );
 
 }

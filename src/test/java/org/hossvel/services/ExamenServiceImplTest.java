@@ -7,6 +7,7 @@ import org.hossvel.service.ExamenServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -217,4 +218,54 @@ public class ExamenServiceImplTest {
         verify(ipreguntaRepository).findPreguntasPorExamenId(eq(6L));
 
     }
+
+    @Test
+    void testArgumentMatchers5() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES_ID_NEGATIVOS);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(argThat(new MiArgsMatchers()));
+
+    }
+    @Test
+    void testArgumentMatchersnull() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES_ID_NEGATIVOS);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        // examenServiceImpl.findExamenPorNombreConPreguntas("Ciencias");// no existe en la lista
+        // examenServiceImpl.findExamenPorNombreConPreguntas("Ciencias");//  existe en la lista pero id es null
+        examenServiceImpl.findExamenPorNombreConPreguntas("Arte");
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(argThat(new MiArgsMatchers()));
+
+    }
+
+    @Test
+    void testArgumentMatchers6() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES_ID_NEGATIVOS);
+        when(ipreguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Arte");
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(argThat( (argument) -> argument != null && argument > 0));
+
+    }
+
+    public static class MiArgsMatchers implements ArgumentMatcher<Long> {
+        private Long argument;
+        @Override
+        public boolean matches(Long argument) {
+            this.argument = argument;
+            return argument != null && argument > 0;
+        }
+        @Override
+        public String toString() {
+            return "es para un mensaje personalizado de error " +
+                    "que imprime mockito en caso de que falle el test "
+                    + argument + " debe ser un entero positivo";
+        }
+    }
+
 }
