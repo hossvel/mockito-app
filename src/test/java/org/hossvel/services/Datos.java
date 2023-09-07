@@ -19,4 +19,5 @@ public class Datos {
     public final static List<String> PREGUNTAS = Arrays.asList("aritmética","integrales",
             "derivadas", "trigonometría", "geometría","programacion");
     public final static Examen EXAMEN = new Examen(null, "Física");
+    public final static Examen EXAMEN1 = new Examen(2L, "Geografia");
 }

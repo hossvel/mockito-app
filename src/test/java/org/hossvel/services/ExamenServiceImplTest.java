@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.mockito.stubbing.Answer;
 
 
 import java.util.Collections;
@@ -32,7 +34,7 @@ public class ExamenServiceImplTest {
     ExamenServiceImpl examenServiceImpl;// es la implementacion
     @BeforeEach
     void setUp() {
-       //MockitoAnnotations.openMocks(this); // para uso de anotaciones
+        //MockitoAnnotations.openMocks(this); // para uso de anotaciones
         System.out.println("Inicio de Metodo");
     }
 
@@ -90,9 +92,12 @@ public class ExamenServiceImplTest {
 
     @Test
     void testPreguntasExamenIdVerify() {
+        //given
         when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
         when(ipreguntaRepository.findPreguntasPorExamenId(6L)).thenReturn(Datos.PREGUNTAS);
+        //when
         Examen examen = examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        //then
         assertEquals(6, examen.getPreguntas().size());
         assertTrue(examen.getPreguntas().contains("integrales"));
         verify(iexamenRepository).findAll();
@@ -113,5 +118,46 @@ public class ExamenServiceImplTest {
         assertNull(examen);
         verify(iexamenRepository).findAll();
         // verify(ipreguntaRepository).findPreguntasPorExamenId(anyLong()); // No llama porq no encontro examen
+    }
+
+
+    @Test
+    void testGuardarExamen() {
+        when(iexamenRepository.guardar(any(Examen.class))).thenReturn(Datos.EXAMEN1);
+        Examen examen = examenServiceImpl.guardar(Datos.EXAMEN);
+        assertNotNull(examen.getId());
+        assertEquals(2L, examen.getId());
+        assertEquals("Geografia", examen.getNombre());
+
+        verify(iexamenRepository).guardar(any(Examen.class));
+
+    }
+    @Test
+    void testGuardarExamenConPregunta() {
+        // Given
+        Examen newExamen = Datos.EXAMEN;
+        newExamen.setPreguntas(Datos.PREGUNTAS);
+
+        when(iexamenRepository.guardar(any(Examen.class))).then(new Answer<Examen>(){
+            Long secuencia = 10L;
+            @Override
+            public Examen answer(InvocationOnMock invocation) throws Throwable {
+                Examen examen = invocation.getArgument(0);
+                examen.setId(secuencia++);
+                return examen;
+            }
+
+        });
+
+        // When
+        Examen examen = examenServiceImpl.guardar(newExamen);
+
+        // Then
+        assertNotNull(examen.getId());
+        assertEquals(10L, examen.getId());
+        assertEquals("Física", examen.getNombre());
+
+        verify(iexamenRepository).guardar(any(Examen.class));
+        verify(ipreguntaRepository).guardarVarias(anyList());
     }
 }
