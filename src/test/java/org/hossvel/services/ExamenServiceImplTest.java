@@ -160,4 +160,19 @@ public class ExamenServiceImplTest {
         verify(iexamenRepository).guardar(any(Examen.class));
         verify(ipreguntaRepository).guardarVarias(anyList());
     }
+
+
+    @Test
+    void testManejoException() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES_ID_NULL);
+        when(ipreguntaRepository.findPreguntasPorExamenId(isNull())).thenThrow(new IllegalArgumentException());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        });
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+
+        verify(iexamenRepository).findAll();
+        verify(ipreguntaRepository).findPreguntasPorExamenId(isNull());
+
+    }
 }
