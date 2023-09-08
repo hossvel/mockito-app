@@ -349,4 +349,23 @@ public class ExamenServiceImplTest {
         verify(examenRepository).findAll();
         verify(preguntaRepository).findPreguntasPorExamenId(anyLong());
     }
+
+    @Test
+    void testSpy2() {
+        IExamenRepository examenRepository = spy(ExamenRepositoryImpl.class);
+        IPreguntaRepository preguntaRepository = spy(PreguntaRepositoryImpl.class);
+        IExamenService examenService = new ExamenServiceImpl(examenRepository, preguntaRepository);
+
+        List<String> preguntas = Arrays.asList("aritmetica");
+        doReturn(preguntas).when(preguntaRepository).findPreguntasPorExamenId(anyLong());
+
+        Examen examen = examenService.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6L, examen.getId());
+        assertEquals("Lenguaje", examen.getNombre());
+        assertEquals(1, examen.getPreguntas().size());
+        assertTrue(examen.getPreguntas().contains("aritmetica"));
+
+        verify(examenRepository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(anyLong());
+    }
 }
