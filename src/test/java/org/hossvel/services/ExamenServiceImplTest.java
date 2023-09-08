@@ -398,4 +398,56 @@ public class ExamenServiceImplTest {
     }
 
 
+    @Test
+    void testNumeroDeInvocaciones4() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(ipreguntaRepository).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository,times(1)).findPreguntasPorExamenId(6L);
+        }
+
+    @Test
+    void testNumeroDeInvocaciones() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(ipreguntaRepository).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, times(1)).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atLeast(1)).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atLeastOnce()).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atMost(1)).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atMostOnce()).findPreguntasPorExamenId(6L);
+    }
+
+    @Test
+    void testNumeroDeInvocaciones2() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+//        verify(ipreguntaRepository).findPreguntasPorExamenId(5L); falla
+        verify(ipreguntaRepository, times(1)).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atLeast(1)).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atLeastOnce()).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atMost(20)).findPreguntasPorExamenId(6L);
+        verify(ipreguntaRepository, atMostOnce()).findPreguntasPorExamenId(6L); //falla
+    }
+
+    @Test
+    void testNumeroInvocaciones3() {
+        when(iexamenRepository.findAll()).thenReturn(Collections.emptyList());
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+
+        verify(ipreguntaRepository, never()).findPreguntasPorExamenId(6L);
+        verifyNoInteractions(ipreguntaRepository);
+
+        verify(iexamenRepository).findAll();
+        verify(iexamenRepository, times(1)).findAll();
+        verify(iexamenRepository, atLeast(1)).findAll();
+        verify(iexamenRepository, atLeastOnce()).findAll();
+        verify(iexamenRepository, atMost(10)).findAll();
+        verify(iexamenRepository, atMostOnce()).findAll();
+    }
+
+
 }
