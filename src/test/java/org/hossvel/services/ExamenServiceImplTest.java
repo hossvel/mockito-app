@@ -6,6 +6,7 @@ import org.hossvel.repository.IExamenRepository;
 import org.hossvel.repository.IPreguntaRepository;
 import org.hossvel.repository.PreguntaRepositoryImpl;
 import org.hossvel.service.ExamenServiceImpl;
+import org.hossvel.service.IExamenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
 
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -330,5 +332,21 @@ public class ExamenServiceImplTest {
         assertEquals(6L, examen.getId());
         assertEquals("Lenguaje", examen.getNombre());
 
+    }
+
+    @Test
+    void testSpy() {
+        IExamenRepository examenRepository = spy(ExamenRepositoryImpl.class);
+        IPreguntaRepository preguntaRepository = spy(PreguntaRepositoryImpl.class);
+        IExamenService examenService = new ExamenServiceImpl(examenRepository, preguntaRepository);
+
+        Examen examen = examenService.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6L, examen.getId());
+        assertEquals("Lenguaje", examen.getNombre());
+        assertEquals(6, examen.getPreguntas().size());
+        assertTrue(examen.getPreguntas().contains("aritmética"));
+
+        verify(examenRepository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(anyLong());
     }
 }
