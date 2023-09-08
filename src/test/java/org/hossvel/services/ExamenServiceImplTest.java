@@ -1,8 +1,10 @@
 package org.hossvel.services;
 
 import org.hossvel.models.Examen;
+import org.hossvel.repository.ExamenRepositoryImpl;
 import org.hossvel.repository.IExamenRepository;
 import org.hossvel.repository.IPreguntaRepository;
+import org.hossvel.repository.PreguntaRepositoryImpl;
 import org.hossvel.service.ExamenServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,9 +28,9 @@ import static org.mockito.Mockito.*;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ExamenServiceImplTest {
     @Mock
-    IExamenRepository iexamenRepository;
+    ExamenRepositoryImpl iexamenRepository;
     @Mock
-    IPreguntaRepository ipreguntaRepository;
+    PreguntaRepositoryImpl ipreguntaRepository;
     @InjectMocks
     ExamenServiceImpl examenServiceImpl;// es la implementacion
 
@@ -317,5 +319,16 @@ public class ExamenServiceImplTest {
         assertEquals("Lenguaje", examen.getNombre());
 
         verify(ipreguntaRepository).findPreguntasPorExamenId(anyLong());
+    }
+
+    @Test
+    void testDoCallRealMethod() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+//        when(preguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        doCallRealMethod().when(ipreguntaRepository).findPreguntasPorExamenId(anyLong());
+        Examen examen = examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6L, examen.getId());
+        assertEquals("Lenguaje", examen.getNombre());
+
     }
 }
