@@ -290,4 +290,15 @@ public class ExamenServiceImplTest {
 
         assertEquals(6L, captor.getValue());
     }
+
+    @Test
+    void testDoThrow() {
+        Examen examen = Datos.EXAMEN;
+        examen.setPreguntas(Datos.PREGUNTAS);
+        doThrow(IllegalArgumentException.class).when(ipreguntaRepository).guardarVarias(anyList());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            examenServiceImpl.guardar(examen);
+        });
+    }
 }
