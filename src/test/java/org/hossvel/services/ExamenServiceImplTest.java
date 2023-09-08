@@ -368,4 +368,34 @@ public class ExamenServiceImplTest {
         verify(examenRepository).findAll();
         verify(preguntaRepository).findPreguntasPorExamenId(anyLong());
     }
+
+    @Test
+    void testOrdenDeInvocaciones() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        examenServiceImpl.findExamenPorNombreConPreguntas("Historia");
+
+        InOrder inOrder = inOrder(ipreguntaRepository);
+        inOrder.verify(ipreguntaRepository).findPreguntasPorExamenId(6L);
+        inOrder.verify(ipreguntaRepository).findPreguntasPorExamenId(7L);
+
+    }
+    @Test
+    void testOrdenDeInvocaciones2() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+
+        examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        examenServiceImpl.findExamenPorNombreConPreguntas("Historia");
+
+        InOrder inOrder = inOrder(iexamenRepository, ipreguntaRepository);
+        inOrder.verify(iexamenRepository).findAll();
+        inOrder.verify(ipreguntaRepository).findPreguntasPorExamenId(6L);
+
+        inOrder.verify(iexamenRepository).findAll();
+        inOrder.verify(ipreguntaRepository).findPreguntasPorExamenId(7L);
+
+    }
+
+
 }
