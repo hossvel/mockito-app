@@ -301,4 +301,21 @@ public class ExamenServiceImplTest {
             examenServiceImpl.guardar(examen);
         });
     }
+
+    @Test
+    void testDoAnswer() {
+        when(iexamenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        doAnswer(invocation -> {
+            Long id = invocation.getArgument(0);
+            return id == 6L? Datos.PREGUNTAS: Collections.emptyList();
+        }).when(ipreguntaRepository).findPreguntasPorExamenId(anyLong());
+
+        Examen examen =   examenServiceImpl.findExamenPorNombreConPreguntas("Lenguaje");
+        assertEquals(6, examen.getPreguntas().size());
+        assertTrue(examen.getPreguntas().contains("geometría"));
+        assertEquals(6L, examen.getId());
+        assertEquals("Lenguaje", examen.getNombre());
+
+        verify(ipreguntaRepository).findPreguntasPorExamenId(anyLong());
+    }
 }
